@@ -5,8 +5,14 @@ See https://stackoverflow.com/questions/56135785/correctly-set-the-location-of-i
 It improves the sample code originally submitted by user [bruce-adams](https://stackoverflow.com/users/1569204/bruce-adams)
 and provides some recommendations to better organize the associated CMake project.
 
+### ChangeLog summarizing edits
+* 2019-05-25
+  * Create GitHub project to streamline reuse and adaptation. See https://github.com/jcfr/stackoverflow-56135785-answer
+  * Rename project and source directory from `foobar` to `FooBarLib`, update [Suggestions](#suggestions) section accordingly
+  * Improve `build.sh`
+  * Updated suggestions (`CPACK_PACKAGING_INSTALL_PREFIX` should be absolute)
 
-### Suggestions
+### Remarks
 
 * Two config files should be generated:
   * one for the build tree: this allow user of your project to directly build against your project and import targets
@@ -22,9 +28,9 @@ and provides some recommendations to better organize the associated CMake projec
 * Since version is already associated with the project, there is no need to set `VERSION` variable. Instead, you can use `PROJECT_VERSION` or `FOOBAR_VERSION`
 * If starting a new project, prefer the most recent CMake version. CMake 3.13 instead of CMake 3.7
 * Introduced variable `<projecname_uc>_INSTALL_CONFIG_DIR`
-* `foobarTargets.cmake` should not be installed using `install(FILES ...)`,  it is already associated with an install rule
+* `<project_name>Targets.cmake` should not be installed using `install(FILES ...)`,  it is already associated with an install rule
 * conditionally set `CMAKE_INSTALL_RPATH`, it is valid only on Linux
-* `foobarConfig.cmake.in`:
+* `<project_name>Config.cmake.in`:
   * there is no need to set `FOOBAR_LIBRARY`, this information is already associated with the exported `foobar` target
   * FOOBAR_LIBRARY_DIR is also not needed, this information is already associated with the exported `foobar` target
   * instead of setting FOOBAR_INCLUDE_DIR, the command `target_include_directories` should be used
