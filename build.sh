@@ -1,26 +1,36 @@
-#!/bin/sh
+#!/bin/bash
 
-rm -rf target
-mkdir target
-cd target
-cmake .. &&
-make &&
+set -xeu
+set -o pipefail
+
+script_dir=$(cd $(dirname $0) || exit 1; pwd)
+
+# cleanup foobar-build
+cd $script_dir
+rm -rf foobar-build
+mkdir foobar-build
+cd foobar-build
+
+# configure, build and package foobar
+cmake ../foobar
+make
+#make package
 cpack -G TGZ
-if [ $? -ne 0 ]; then
-   echo "doh!"
-   exit 1
-fi
 
-cd ..
-rm -rf install
-mkdir install
-cd install
-tar -xvzf ../target/foobar-1.2.3.tar.gz
-cp ../useFoo.cmake CMakeLists.txt
-export CMAKE_PREFIX_PATH=`pwd`/opt/foobar/lib/cmake:`pwd`/opt/foobar/lib/cmake/foobar
-cmake .
-if [ $? -ne 0 ]; then
-   echo "doh!"
-   exit 1
-fi
+# extract foobar archive
+cd $script_dir
+rm -rf foobar-install
+mkdir foobar-install
+cd foobar-install
+tar -xvzf ../foobar-build/foobar-1.2.3.tar.gz
+
+# cleanup useFoo-build
+cd $script_dir
+rm -rf useFoo-build
+mkdir useFoo-build
+cd useFoo-build
+
+# configure useFoo
+cmake -Dfoobar_DIR=$script_dir/foobar-install/lib/cmake/foobar/ ../useFoo
+
 cat foobar-gen
