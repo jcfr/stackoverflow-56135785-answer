@@ -10,10 +10,12 @@ and provides some recommendations to better organize the associated CMake projec
   * Create GitHub project to streamline reuse and adaptation. See https://github.com/jcfr/stackoverflow-56135785-answer
   * Rename project and source directory from `foobar` to `FooBarLib`, update [Suggestions](#suggestions) section accordingly
   * Improve `build.sh`
-  * Updated suggestions (`CPACK_PACKAGING_INSTALL_PREFIX` should be absolute)
+  * Updated suggestions (`CPACK_PACKAGING_INSTALL_PREFIX` should indeed be absolute to properly impact RPM layout)
   * RPM:
-     * Add support for building RPM package using `make package`
+     * Be aware that setting `CPACK_PACKAGING_INSTALL_PREFIX` also impact the layout of the `TGZ` archive, this propably
+       not what you want.
      * Update `build.sh` to display content of RPM package
+     * `CPACK_PACKAGING_INSTALL_PREFIX` is set to `/opt`
 
 ### Remarks
 

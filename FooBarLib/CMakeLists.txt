@@ -126,6 +126,9 @@ set(CPACK_PACKAGE_NAME "${PROJECT_NAME}")
 set(CPACK_PACKAGE_VERSION ${PROJECT_VERSION})
 set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}")
 
+# Setting this variable also impacts the layout of TGZ.
+set(CPACK_PACKAGING_INSTALL_PREFIX "/opt")
+
 # Setting CPACK_SOURCE_* and CPACK_GENERATOR allow to have "make package" generates
 # the expected archive.
 

@@ -17,7 +17,7 @@ cd ${project_name}-build
 # configure, build and package ${project_name}
 cmake ../${project_name}
 make
-make package # equivalent to running "cpack -G TGZ", and "cpack -G RPM"
+make package # equivalent to running "cpack -G TGZ" and "cmake -G RPM"
 
 # extract ${project_name} archive
 cd $script_dir
@@ -32,8 +32,10 @@ rm -rf useFoo-build
 mkdir useFoo-build
 cd useFoo-build
 
+cpack_install_prefix=/opt
+
 # configure useFoo
-cmake -D${project_name}_DIR=$script_dir/${project_name}-install/lib/cmake/${project_name}/ ../useFoo
+cmake -D${project_name}_DIR=$script_dir/${project_name}-install${cpack_install_prefix}/lib/cmake/${project_name}/ ../useFoo
 
 cat foobar-gen
 
