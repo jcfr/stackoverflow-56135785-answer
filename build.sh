@@ -22,7 +22,7 @@ cd $script_dir
 rm -rf foobar-install
 mkdir foobar-install
 cd foobar-install
-tar -xvzf ../foobar-build/foobar-1.2.3.tar.gz
+tar -xvzf ../foobar-build/FooBarLib-1.2.3.tar.gz
 
 # cleanup useFoo-build
 cd $script_dir
@@ -31,6 +31,6 @@ mkdir useFoo-build
 cd useFoo-build
 
 # configure useFoo
-cmake -Dfoobar_DIR=$script_dir/foobar-install/lib/cmake/foobar/ ../useFoo
+cmake -DFooBarLib_DIR=$script_dir/foobar-install/lib/cmake/FooBarLib/ ../useFoo
 
 cat foobar-gen

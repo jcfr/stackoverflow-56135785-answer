@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13)
 
-project(FOOBAR VERSION 1.2.3)
+project(FooBarLib VERSION 1.2.3)
 
 if(UNIX AND NOT APPLE)
   set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib:$ORIGIN/")
@@ -17,20 +17,28 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 #------------------------------------------------------------------------------
-if(NOT DEFINED FOOBAR_INSTALL_INCLUDE_DIR)
-  set(FOOBAR_INSTALL_INCLUDE_DIR include)
+# This variable controls the prefix used to generate the following files:
+#  <export_config_name>ConfigVersion.cmake
+#  <export_config_name>Config.cmake
+#  <export_config_name>Targets.cmake
+# and it also used to initialize FOOBARLIB_INSTALL_CONFIG_DIR value.
+set(export_config_name ${PROJECT_NAME})
+
+#------------------------------------------------------------------------------
+if(NOT DEFINED FOOBARLIB_INSTALL_INCLUDE_DIR)
+  set(FOOBARLIB_INSTALL_INCLUDE_DIR include)
 endif()
 
-if(NOT DEFINED FOOBAR_INSTALL_BIN_DIR)
-  set(FOOBAR_INSTALL_BIN_DIR bin)
+if(NOT DEFINED FOOBARLIB_INSTALL_BIN_DIR)
+  set(FOOBARLIB_INSTALL_BIN_DIR bin)
 endif()
 
-if(NOT DEFINED FOOBAR_INSTALL_LIBRARY_DIR)
-  set(FOOBAR_INSTALL_LIBRARY_DIR lib)
+if(NOT DEFINED FOOBARLIB_INSTALL_LIBRARY_DIR)
+  set(FOOBARLIB_INSTALL_LIBRARY_DIR lib)
 endif()
 
-if(NOT DEFINED FOOBAR_INSTALL_CONFIG_DIR)
-  set(FOOBAR_INSTALL_CONFIG_DIR ${FOOBAR_INSTALL_LIBRARY_DIR}/cmake/foobar)
+if(NOT DEFINED FOOBARLIB_INSTALL_CONFIG_DIR)
+  set(FOOBARLIB_INSTALL_CONFIG_DIR ${FOOBARLIB_INSTALL_LIBRARY_DIR}/cmake/${export_config_name})
 endif()
 
 #------------------------------------------------------------------------------
@@ -41,7 +49,7 @@ set(headers
 # Install rule for headers
 install(
   FILES ${headers}
-  DESTINATION ${FOOBAR_INSTALL_INCLUDE_DIR}
+  DESTINATION ${FOOBARLIB_INSTALL_INCLUDE_DIR}
   COMPONENT Development
   )
 
@@ -52,70 +60,70 @@ add_library(foobar SHARED
 
 target_include_directories(foobar
   PUBLIC
-    $<BUILD_INTERFACE:${FOOBAR_SOURCE_DIR}>
-    $<INSTALL_INTERFACE:${FOOBAR_INSTALL_INCLUDE_DIR}>
+    $<BUILD_INTERFACE:${FooBarLib_SOURCE_DIR}>
+    $<INSTALL_INTERFACE:${FOOBARLIB_INSTALL_INCLUDE_DIR}>
   )
 
 install(
   TARGETS foobar
-  EXPORT foobarTargets
-  ARCHIVE DESTINATION ${FOOBAR_INSTALL_LIBRARY_DIR} COMPONENT Development
-  LIBRARY DESTINATION ${FOOBAR_INSTALL_LIBRARY_DIR} COMPONENT RuntimeLibraries
-  RUNTIME DESTINATION ${FOOBAR_BIN_INSTALL_DIR} COMPONENT RuntimeLibraries
+  EXPORT ${export_config_name}Targets
+  ARCHIVE DESTINATION ${FOOBARLIB_INSTALL_LIBRARY_DIR} COMPONENT Development
+  LIBRARY DESTINATION ${FOOBARLIB_INSTALL_LIBRARY_DIR} COMPONENT RuntimeLibraries
+  RUNTIME DESTINATION ${FOOBARLIB_INSTALL_BIN_DIR} COMPONENT RuntimeLibraries
   )
 
 #------------------------------------------------------------------------------
-# Configure foobarConfigVersion.cmake common to build and install tree
+# Configure <export_config_name>ConfigVersion.cmake common to build and install tree
 include(CMakePackageConfigHelpers)
-set(config_version_file ${PROJECT_BINARY_DIR}/foobarConfigVersion.cmake)
+set(config_version_file ${PROJECT_BINARY_DIR}/${export_config_name}ConfigVersion.cmake)
 write_basic_package_version_file(
   ${config_version_file}
-  VERSION "${FOOBAR_VERSION}"
+  VERSION "${FooBarLib_VERSION}"
   COMPATIBILITY ExactVersion
   )
 
 #------------------------------------------------------------------------------
-# Export 'foobarTargets.cmake' for a build tree
+# Export '<export_config_name>Targets.cmake' for a build tree
 export(
-  EXPORT foobarTargets
-  FILE "${CMAKE_CURRENT_BINARY_DIR}/foobarTargets.cmake"
+  EXPORT ${PROJECT_NAME}Targets
+  FILE "${CMAKE_CURRENT_BINARY_DIR}/${export_config_name}Targets.cmake"
   )
 
-# Configure 'foobarConfig.cmake' for a build tree
-set(build_config ${CMAKE_BINARY_DIR}/foobarConfig.cmake)
+# Configure '<export_config_name>Config.cmake' for a build tree
+set(build_config ${CMAKE_BINARY_DIR}/${export_config_name}Config.cmake)
 configure_package_config_file(
-  foobarConfig.cmake.in 
+  ${export_config_name}Config.cmake.in 
   ${build_config}
   INSTALL_DESTINATION "${PROJECT_BINARY_DIR}"
   )
 
 #------------------------------------------------------------------------------
-# Export 'foobarTargets.cmake' for an install tree
+# Export '<export_config_name>Targets.cmake' for an install tree
 install(
-  EXPORT foobarTargets
-  FILE foobarTargets.cmake
-  DESTINATION ${FOOBAR_INSTALL_CONFIG_DIR}
+  EXPORT ${export_config_name}Targets
+  FILE ${export_config_name}Targets.cmake
+  DESTINATION ${FOOBARLIB_INSTALL_CONFIG_DIR}
   )
 
-set(install_config ${PROJECT_BINARY_DIR}/CMakeFiles/foobarConfig.cmake)
+set(install_config ${PROJECT_BINARY_DIR}/CMakeFiles/${export_config_name}Config.cmake)
 configure_package_config_file(
-  foobarConfig.cmake.in 
+  ${export_config_name}Config.cmake.in 
   ${install_config}
-  INSTALL_DESTINATION ${FOOBAR_INSTALL_CONFIG_DIR}
+  INSTALL_DESTINATION ${FOOBARLIB_INSTALL_CONFIG_DIR}
   )
 
 # Install config files
 install(
   FILES ${config_version_file} ${install_config}
-  DESTINATION "${FOOBAR_INSTALL_CONFIG_DIR}"
+  DESTINATION "${FOOBARLIB_INSTALL_CONFIG_DIR}"
   )
 
 #------------------------------------------------------------------------------
 # Generate package
 
 set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY 0)
-set(CPACK_PACKAGE_NAME "foobar")
-set(CPACK_PACKAGE_VERSION ${FOOBAR_VERSION})
+set(CPACK_PACKAGE_NAME "${PROJECT_NAME}")
+set(CPACK_PACKAGE_VERSION ${PROJECT_VERSION})
 set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}")
 
 # Setting CPACK_SOURCE_* and CPACK_GENERATOR allow to have "make package" generates

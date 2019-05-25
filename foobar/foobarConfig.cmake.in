@@ -1,7 +1,0 @@
-
-@PACKAGE_INIT@
-
-set_and_check(foobar_TARGETS "${CMAKE_CURRENT_LIST_DIR}/foobarTargets.cmake")
-
-include(${foobar_TARGETS})
-
