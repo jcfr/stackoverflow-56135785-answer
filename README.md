@@ -11,6 +11,9 @@ and provides some recommendations to better organize the associated CMake projec
   * Rename project and source directory from `foobar` to `FooBarLib`, update [Suggestions](#suggestions) section accordingly
   * Improve `build.sh`
   * Updated suggestions (`CPACK_PACKAGING_INSTALL_PREFIX` should be absolute)
+  * RPM:
+     * Add support for building RPM package using `make package`
+     * Update `build.sh` to display content of RPM package
 
 ### Remarks
 

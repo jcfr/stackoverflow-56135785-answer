@@ -134,12 +134,15 @@ set(CPACK_SOURCE_TBZ2 OFF CACHE BOOL "Enable to build TBZ2 source packages" FORC
 set(CPACK_SOURCE_TGZ  OFF CACHE BOOL "Enable to build TGZ source packages" FORCE)
 set(CPACK_SOURCE_TZ OFF CACHE BOOL "Enable to build TZ source packages" FORCE)
 
-# Select generator
-if(UNIX)
+# Select generators
+if(UNIX AND NOT APPLE)
   set(CPACK_GENERATOR "TGZ")
-  if(APPLE)
-    # ...
+  find_program(RPMBUILD_PATH rpmbuild)
+  if(RPMBUILD_PATH)
+    list(APPEND CPACK_GENERATOR "RPM")
   endif()
+elseif(APPLE)
+  # ...
 endif()
 
 include(CPack)

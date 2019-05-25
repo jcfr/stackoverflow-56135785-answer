@@ -17,8 +17,7 @@ cd ${project_name}-build
 # configure, build and package ${project_name}
 cmake ../${project_name}
 make
-#make package
-cpack -G TGZ
+make package # equivalent to running "cpack -G TGZ", and "cpack -G RPM"
 
 # extract ${project_name} archive
 cd $script_dir
@@ -37,3 +36,8 @@ cd useFoo-build
 cmake -D${project_name}_DIR=$script_dir/${project_name}-install/lib/cmake/${project_name}/ ../useFoo
 
 cat foobar-gen
+
+# display content of RPM. If command "rpmbuild" is available, RPM package is expected.
+if command -v rpmbuild &> /dev/null; then
+  rpm -qlp $script_dir/${project_name}-build/${archive_name}-1.2.3.rpm
+fi
